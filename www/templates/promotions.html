@@ -1,0 +1,15 @@
+<ion-view view-title="Promotions">
+    <ion-content>
+        <ul class="list" ng-repeat="playlist in playlists">
+                <li class="item item-toggle">
+                    {{playlist.title}}
+                    <label class="toggle">
+                        <input type="checkbox">
+                        <div class="track">
+                            <div class="handle"></div>
+                        </div>
+                    </label>
+                </li>
+        </ul>
+     </ion-content>
+ </ion-view>
