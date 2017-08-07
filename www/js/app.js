@@ -79,12 +79,32 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                 }
             })
 
+            .state('app.promotions-modify', {
+                url: '/promotions-modify',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/promotions-modify.html',
+                        controller: 'PromotionsModifyCtrl'
+                    }
+                }
+            })
+
             .state('app.scanner', {
                 url: '/scanner',
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/scanner.html',
                         controller: 'ScannerCtrl'
+                    }
+                }
+            })
+
+            .state('app.promotion-detail', {
+                url: '/promotions/:promotionId',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/promotion-detail.html',
+                        controller: 'PromotionDetailCtrl'
                     }
                 }
             })
