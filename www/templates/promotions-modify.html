@@ -1,7 +1,7 @@
 <ion-view view-title="Modifica e Cancella Promo">
     <ion-content padding="true" class="has-header">
         <ion-list>
-            <ion-item class="item-remove-animate item-icon-right" ng-repeat="promotion in promotions" type="item-text-wrap" href="#/app/promotions/{{promotion.id}}">
+            <ion-item class="item-remove-animate item-icon-right" ng-repeat="promotion in promotions" type="item-text-wrap" ng-click="openModify(promotion)"> <!--href="#/app/promotions/{{promotion.id}}"> -->
                 {{promotion.name}}
                 <span class="item-note">
                         Punti: {{promotion.points}}
@@ -9,7 +9,7 @@
                 <p>{{promotion.description}}</p>
                 <i class="icon ion-chevron-right icon-accessory"></i>
 
-                <ion-option-button class="button-assertive" ng-click="remove(chat)">
+                <ion-option-button class="button-assertive" ng-click="remove(promotion)">
                     Delete
                 </ion-option-button>
             </ion-item>

@@ -1,4 +1,4 @@
-<ion-view view-title="Dettaglio Promozione">
+<!--<ion-view view-title="Dettaglio Promozione">
     <ion-content>
         <div class="list">
             <label class="item item-input">
@@ -18,4 +18,36 @@
             </label>
         </div>
     </ion-content>
-</ion-view>
+</ion-view> -->
+
+<ion-modal-view>
+    <ion-header-bar>
+        <h1 class="title">Modifica promozione</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeModify()">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">Nome promozione</span>
+                <input type="text" ng-model="promotion.name">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Punti necessari</span>
+                <input type="number" ng-model="promotion.points">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Descrizione</span>
+                <input type="text" ng-model="promotion.description">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Stato</span>
+                <input type="text" ng-model="state" readonly>
+            </label>
+            <label class="item">
+                <button class="button button-block button-positive" ng-click="modify()">Modifica</button>
+            </label>
+        </div>
+    </ion-content>
+</ion-modal-view>

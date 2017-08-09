@@ -7,6 +7,20 @@ var promotions = [
     { name: 'Cowbell', id: 5, state: true , points: 8, description: 'fede gratis'}
 ]
 
+var store = {
+    id: 0,
+    name: "JJ Corner",
+    img: "../img/ionic.png",
+    description: "Birreria di alta qualità",
+    category:"Pub",
+}
+
+var categories =[
+    {type: "Pub", selected: true},
+    {type: "Ristorante", selected: false},
+    {type: "Caffetteria", selected: false},
+    ]
+
 angular.module('starter.controllers', [])
 
 
@@ -51,9 +65,6 @@ angular.module('starter.controllers', [])
         };
     })
 
-    .controller('PlaylistsCtrl', function($scope) {
-        $scope.promotions = promotions
-    })
 
     .controller('PromotionsCtrl', function($scope, $ionicModal) {
         $scope.promotions = promotions
@@ -64,11 +75,11 @@ angular.module('starter.controllers', [])
             $scope.modal = modal;
         });
 
-        $scope.login = function() {
+        $scope.openCreate = function() {
             $scope.modal.show();
         };
 
-        $scope.closeLogin = function() {
+        $scope.closeCreate = function() {
             $scope.modal.hide();
         };
 
@@ -80,13 +91,14 @@ angular.module('starter.controllers', [])
         $scope.createPromotion = function () {
             var promotion = {
                 name: $scope.promotion.name,
-                id: promotions.length,
+                id: promotions[promotions.length-1].id+1,
                 state: true,
                 points: $scope.promotion.points,
                 description: $scope.promotion.description
             }
             promotions.push(promotion)
-            $scope.closeLogin()
+            console.log(promotions)
+            $scope.closeCreate()
         }
 
 
@@ -96,19 +108,84 @@ angular.module('starter.controllers', [])
         $scope.promotions = promotions
     })
 
-    .controller('PromotionDetailCtrl', function($scope,$stateParams) {
+   /* .controller('PromotionDetailCtrl', function($scope,$stateParams) {
         $scope.promotion = promotions[$stateParams.promotionId]
         $scope.modify = function () {
             promotions[$stateParams.promotionId] = $scope.promotion
         }
 
-    })
+    })*/
 
-    .controller('PromotionsModifyCtrl', function($scope,$stateParams) {
+    .controller('PromotionsModifyCtrl', function($scope, $stateParams, $ionicModal) {
         $scope.promotions = promotions
 
+        $ionicModal.fromTemplateUrl('templates/promotion-detail.html', {
+            scope: $scope
+        }).then(function(modal) {
+            $scope.modal = modal;
+        });
+
+        $scope.promotion = promotions[$stateParams.promotionId]
+        $scope.modify = function () {
+            promotions[$scope.promotion.id] = $scope.promotion
+            $scope.closeModify()
+        }
+
+        $scope.openModify = function(promotion) {
+            var app = JSON.parse(JSON.stringify(promotion)) //copio il conternuto del json altrimenti sarebbe passato per reference
+            if(app.state)
+                $scope.state = "Attiva"
+            else
+                $scope.state = "Non Attiva"
+            $scope.promotion = app
+            $scope.modal.show();
+        };
+
+        $scope.closeModify = function() {
+            $scope.modal.hide();
+        };
+
+        $scope.remove =function (promotion) {
+            if(promotion.state)
+                alert("Disattiva la promozione prima di cancellarla")
+            else {
+                var index = promotions.indexOf(promotion)
+                console.log(promotion)
+                console.log(index)
+                if (index > -1)
+                    promotions.splice(index, 1)
+            }
+
+        }
+
 
     })
 
-    .controller('PlaylistCtrl', function($scope, $stateParams) {
+    .controller('SettingsCtrl', function($scope,$ionicModal) {
+        $scope.store = store
+
+        $scope.categories = categories
+
+        $ionicModal.fromTemplateUrl('templates/info-modify.html', {
+            scope: $scope
+        }).then(function(modal) {
+            $scope.modal = modal;
+        });
+
+        $scope.closeModify = function() {
+            $scope.modal.hide();
+        };
+
+        $scope.openModify = function() {
+            var app = JSON.parse(JSON.stringify(store))
+            $scope.store_info = app
+            $scope.modal.show();
+        };
+
+        $scope.modify = function () {
+            store = $scope.store_info
+            $scope.store = store
+            $scope.closeModify()
+        }
+
     });
