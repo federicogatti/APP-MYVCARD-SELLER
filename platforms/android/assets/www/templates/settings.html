@@ -1,0 +1,27 @@
+
+
+<ion-view view-title="Informazioni Store">
+    <ion-nav-buttons side="right">
+        <button  ng-click="openModify()"><!--ui-sref="app.new-promotion()"> -->
+        Modifica
+        </button>
+    </ion-nav-buttons>
+    <ion-content>
+        <div class="list card">
+
+            <div class="item item-avatar">
+                <!--<img src="mcfly.jpg"> -->
+                <h2>{{store.name}}</h2>
+                <p>{{store.category}}</p>
+            </div>
+
+            <div class="item item-body">
+                <img class="full-image" src="{{store.img}}">
+                <p>
+                    {{store.description}}
+                </p>
+            </div>
+
+        </div>
+    </ion-content>
+</ion-view>

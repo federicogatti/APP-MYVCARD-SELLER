@@ -1,0 +1,31 @@
+<ion-modal-view>
+    <ion-header-bar>
+        <h1 class="title">Modifica promozione</h1>
+        <div class="buttons">
+            <button class="button button-clear" ng-click="closeModify()">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">Nome negozio</span>
+                <input type="text" ng-model="store_info.name">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Descrizione</span>
+                <input type="text" ng-model="store_info.description">
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Categoria
+                </div>
+                <select ng-model="store_info.category">
+                    <option ng-repeat="category in categories" ng-selected="category.selected">{{category.type}}</option>
+                </select>
+            </label>
+            <label class="item">
+                <button class="button button-block button-positive" ng-click="modify()">Modifica</button>
+            </label>
+        </div>
+    </ion-content>
+</ion-modal-view>
