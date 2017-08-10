@@ -83,8 +83,10 @@ angular.module('starter.controllers', [])
             $scope.modal.hide();
         };
 
-        $scope.changeState = function (id) {
-            promotions[id].state = !promotions[id].state
+        $scope.changeState = function (promotion) {
+            var index = promotions.indexOf(promotion)
+            promotions[index].state = !promotions[index].state
+            //promotions[id].state = !promotions[id].state
         }
 
         $scope.promotion = {}

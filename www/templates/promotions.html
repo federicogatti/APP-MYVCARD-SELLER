@@ -1,7 +1,6 @@
 <ion-view view-title="Attiva e Crea Promo">
     <ion-nav-buttons side="right">
-    <button class="icon ion-plus" ng-click="openCreate()"><!--ui-sref="app.new-promotion()"> -->
-    </button>
+        <button class=" icon ion-plus button button-clear" ng-click="openCreate()"></button><!--ui-sref="app.new-promotion()"> -->
     </ion-nav-buttons>
     <ion-content>
         <ul class="list" ng-repeat="promotion in promotions">
@@ -13,7 +12,7 @@
                     <p>{{promotion.description}}</p>
 
                     <label class="toggle">
-                        <input type="checkbox" ng-click="changeState(promotion.id)" ng-checked="promotion.state">
+                        <input type="checkbox" ng-click="changeState(promotion)" ng-checked="promotion.state">
                         <div class="track">
                             <div class="handle"></div>
 
