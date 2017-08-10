@@ -3,22 +3,20 @@
         <button class=" icon ion-plus button button-clear" ng-click="openCreate()"></button><!--ui-sref="app.new-promotion()"> -->
     </ion-nav-buttons>
     <ion-content>
-        <ul class="list" ng-repeat="promotion in promotions">
-                <ion-item class="item item-toggle">
-                    {{promotion.name}}
-                    <span class="item-note">
-                        Punti: {{promotion.points}}
-                    </span>
-                    <p>{{promotion.description}}</p>
-
-                    <label class="toggle">
-                        <input type="checkbox" ng-click="changeState(promotion)" ng-checked="promotion.state">
-                        <div class="track">
-                            <div class="handle"></div>
-
-                        </div>
-                    </label>
-                </ion-item>
-        </ul>
-     </ion-content>
- </ion-view>
+        <ion-list>
+        <ion-item class="item item-toggle" ng-repeat="promotion in promotions">
+            {{promotion.name}}
+            <span class="item-note">
+                Punti: {{promotion.points}}
+            </span>
+            <p>{{promotion.description}}</p>
+            <label class="toggle">
+                <input type="checkbox" ng-click="changeState(promotion)" ng-checked="promotion.state">
+                <div class="track">
+                    <div class="handle"></div>
+                </div>
+            </label>
+        </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
