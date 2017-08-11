@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/home/federico/WebstormProjects/APP-MYVCARD-SELLER/platforms/android/CordovaLib/src/main/jniLibs"/></dataSet><dataSet config="debug"><source path="/home/federico/WebstormProjects/APP-MYVCARD-SELLER/platforms/android/CordovaLib/src/debug/jniLibs"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/Users/federicogatti/WebstormProjects/APP-MYVCARD-SELLER2/platforms/android/CordovaLib/src/main/jniLibs"/></dataSet><dataSet config="debug"><source path="/Users/federicogatti/WebstormProjects/APP-MYVCARD-SELLER2/platforms/android/CordovaLib/src/debug/jniLibs"/></dataSet></merger>

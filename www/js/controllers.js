@@ -143,7 +143,6 @@ angular.module('starter.controllers', [])
 
         $scope.remove = function (promotion) {
             if(promotion.state) {
-                // alert("Disattiva la promozione prima di cancellarla")
                 var alertPopup = $ionicPopup.alert({
                     title: 'Promozione attiva!',
                     template: 'Disattiva la promozione prima di cancellarla'
