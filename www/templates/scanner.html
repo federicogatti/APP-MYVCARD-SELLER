@@ -1,5 +1,24 @@
 <ion-view view-title="Scanner">
-    <ion-content>
-        <h1>Scanner</h1>
+    <ion-content style="background: #e8ebf1;" class="padding">
+        <div class="card">
+            <div class="item">
+                <button class="button button-block button-positive" ng-click="scanBarcode()">
+                    <i class="icon ion-qr-scanner"></i>
+                    Scan Now
+                </button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="item item-divider">
+                QR Scan Result
+            </div>
+            <strong>{{reslen}}</strong>
+            <div class="item item-text-wrap">
+                {{result}}
+            </div>
+        </div>
+        <script id="popup-template.html" type="text/ng-template">
+            <input type="number" ng-model="contactMessage.text" name="message">
+        </script>
     </ion-content>
 </ion-view>
