@@ -21,7 +21,7 @@ var categories =[
     {type: "Caffetteria", selected: false},
     ]
 
-angular.module('starter.controllers', [])
+angular.module('starter.controllers',['ngCordova'])
 
 
     .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
@@ -106,8 +106,35 @@ angular.module('starter.controllers', [])
 
     })
 
-    .controller('ScannerCtrl', function($scope) {
-        $scope.promotions = promotions
+    .controller('ScannerCtrl', function($scope,$cordovaBarcodeScanner) {
+       // $scope.promotions = promotions
+        $scope.scanBarCode = function () {
+            $cordovaBarcodeScanner.scan(
+                function (result) {
+                    alert("We got a barcode\n" +
+                        "Result: " + result.text + "\n" +
+                        "Format: " + result.format + "\n" +
+                        "Cancelled: " + result.cancelled);
+                    $scope.result = result
+                },
+                function (error) {
+                    alert("Scanning failed: " + error);
+                },
+                {
+                    preferFrontCamera : true, // iOS and Android
+                    showFlipCameraButton : true, // iOS and Android
+                    showTorchButton : true, // iOS and Android
+                    torchOn: true, // Android, launch with the torch switched on (if available)
+                    saveHistory: true, // Android, save scan history (default false)
+                    prompt : "Place a barcode inside the scan area", // Android
+                    resultDisplayDuration: 500, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
+                    formats : "QR_CODE,PDF_417", // default: all but PDF_417 and RSS_EXPANDED
+                    orientation : "landscape", // Android only (portrait|landscape), default unset so it rotates with the device
+                    disableAnimations : true, // iOS
+                    disableSuccessBeep: false // iOS
+                }
+            );
+        }
     })
 
     .controller('PromotionsModifyCtrl', function($scope, $ionicModal, $ionicPopup) {
