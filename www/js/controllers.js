@@ -66,8 +66,21 @@ angular.module('starter.controllers',['ngCordova'])
     })
 
 
-    .controller('PromotionsCtrl', function($scope, $ionicModal) {
-        $scope.promotions = promotions
+    .controller('PromotionsCtrl', function($scope, $ionicModal, GetSellers) {
+
+        GetSellers.getDataID(0).then(data => {
+            console.log(data.data.data[0])
+        GetSellers.cachedStore = data.data.data[0].promotions;
+         })
+
+        $scope.$watch(function () {
+                return GetSellers.cachedStore;
+            },
+            function (newValue, oldValue) {
+                $scope.promotions = newValue;
+            }, true);
+
+        //$scope.promotions = promotions
 
         $ionicModal.fromTemplateUrl('templates/new-promotion.html', {
             scope: $scope
@@ -137,8 +150,21 @@ angular.module('starter.controllers',['ngCordova'])
         }
     })
 
-    .controller('PromotionsModifyCtrl', function($scope, $ionicModal, $ionicPopup) {
-        $scope.promotions = promotions
+    .controller('PromotionsModifyCtrl', function($scope, $ionicModal, $ionicPopup, GetSellers) {
+      //  $scope.promotions = promotions
+
+        GetSellers.getDataID(0).then(data => {
+            console.log(data.data.data[0])
+        GetSellers.cachedStore = data.data.data[0].promotions;
+        })
+
+        $scope.$watch(function () {
+                return GetSellers.cachedStore;
+            },
+            function (newValue, oldValue) {
+                $scope.promotions = newValue;
+            }, true);
+
         var index   //l'indice dell'elemento da modificare viene calcolato nel momento dell'apertura della finestra di modidifca (openModify) e viene usato dal metodo modify()
 
         $ionicModal.fromTemplateUrl('templates/promotion-detail.html', {
@@ -187,8 +213,21 @@ angular.module('starter.controllers',['ngCordova'])
         }
     })
 
-    .controller('SettingsCtrl', function($scope,$ionicModal) {
-        $scope.store = store
+    .controller('SettingsCtrl', function($scope,$ionicModal, GetSellers) {
+
+        GetSellers.getDataID(0).then(data => {
+            console.log(data.data.data[0])
+        GetSellers.cachedStore = data.data.data[0];
+        })
+
+        $scope.$watch(function () {
+                return GetSellers.cachedStore;
+            },
+            function (newValue, oldValue) {
+                $scope.store = newValue;
+            }, true);
+
+       // $scope.store = store
 
         $scope.categories = categories
 
