@@ -66,8 +66,21 @@ angular.module('starter.controllers',['ngCordova'])
     })
 
 
-    .controller('PromotionsCtrl', function($scope, $ionicModal) {
-        $scope.promotions = promotions
+    .controller('PromotionsCtrl', function($scope, $ionicModal, GetSellers) {
+
+        GetSellers.getDataID(0).then(data => {
+            console.log(data.data.data[0])
+        GetSellers.cachedStore = data.data.data[0].promotions;
+         })
+
+        $scope.$watch(function () {
+                return GetSellers.cachedStore;
+            },
+            function (newValue, oldValue) {
+                $scope.promotions = newValue;
+            }, true);
+
+        //$scope.promotions = promotions
 
         $ionicModal.fromTemplateUrl('templates/new-promotion.html', {
             scope: $scope
@@ -106,15 +119,51 @@ angular.module('starter.controllers',['ngCordova'])
 
     })
 
-    .controller('ScannerCtrl', function($scope,$cordovaBarcodeScanner) {
-        $scope.promotions = promotions
+    .controller('ScannerCtrl', function($scope,$cordovaBarcodeScanner, $ionicPopup,Points) {
+       // $scope.promotions = promotions
+
+       /* $scope.contactMessage = {
+            text: 0
+        }
+        var showPopup = function(customer) {
+
+            // An elaborate, custom popup
+            var myPopup = $ionicPopup.show({
+                templateUrl: 'popup-template.html',
+                scope: $scope,
+                buttons: [{
+                    text: 'Cancel',
+                    onTap: function(e) {
+                        //alert($scope.contactMessage.text);
+                        //return 'cancel button'
+                    }
+                }, {
+                    text: '<b>Ok</b>',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        //alert($scope.contactMessage.text);
+                        //return 'ok button'
+                        return $scope.contactMessage.text;
+                    }
+                }, ]
+            });
+            myPopup.then(function(res) {
+                Points.add(customer, 'geekology', 10);
+                $scope.result = "Accredito " + res + " punti a: " + customer;
+            });
+        };*/
         $scope.scanBarCode = function () {
-            $cordovaBarcodeScanner.scan(
-                function (result) {
+            $cordovaBarcodeScanner.scan().then(function(imageData){
+                    var res = imageData.text.split('$');
+                    $scope.result = res[0]
+                    Points.add(res[0], '1', 10)
+                }
+               /* function (result) {
                     alert("We got a barcode\n" +
                         "Result: " + result.text + "\n" +
                         "Format: " + result.format + "\n" +
                         "Cancelled: " + result.cancelled);
+                    $scope.result = result
                 },
                 function (error) {
                     alert("Scanning failed: " + error);
@@ -131,13 +180,26 @@ angular.module('starter.controllers',['ngCordova'])
                     orientation : "landscape", // Android only (portrait|landscape), default unset so it rotates with the device
                     disableAnimations : true, // iOS
                     disableSuccessBeep: false // iOS
-                }
+                }*/
             );
         }
     })
 
-    .controller('PromotionsModifyCtrl', function($scope, $ionicModal, $ionicPopup) {
-        $scope.promotions = promotions
+    .controller('PromotionsModifyCtrl', function($scope, $ionicModal, $ionicPopup, GetSellers) {
+      //  $scope.promotions = promotions
+
+        GetSellers.getDataID(0).then(data => {
+            console.log(data.data.data[0])
+        GetSellers.cachedStore = data.data.data[0].promotions;
+        })
+
+        $scope.$watch(function () {
+                return GetSellers.cachedStore;
+            },
+            function (newValue, oldValue) {
+                $scope.promotions = newValue;
+            }, true);
+
         var index   //l'indice dell'elemento da modificare viene calcolato nel momento dell'apertura della finestra di modidifca (openModify) e viene usato dal metodo modify()
 
         $ionicModal.fromTemplateUrl('templates/promotion-detail.html', {
@@ -186,8 +248,21 @@ angular.module('starter.controllers',['ngCordova'])
         }
     })
 
-    .controller('SettingsCtrl', function($scope,$ionicModal) {
-        $scope.store = store
+    .controller('SettingsCtrl', function($scope,$ionicModal, GetSellers) {
+
+        GetSellers.getDataID(0).then(data => {
+            console.log(data.data.data[0])
+        GetSellers.cachedStore = data.data.data[0];
+        })
+
+        $scope.$watch(function () {
+                return GetSellers.cachedStore;
+            },
+            function (newValue, oldValue) {
+                $scope.store = newValue;
+            }, true);
+
+       // $scope.store = store
 
         $scope.categories = categories
 
