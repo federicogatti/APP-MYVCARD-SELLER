@@ -70,11 +70,11 @@ angular.module('starter.controllers',['ngCordova'])
 
         GetSellers.getDataID(0).then(data => {
             console.log(data.data.data[0])
-        GetSellers.cachedStore = data.data.data[0].promotions;
+        GetSellers.cachedPromotions = data.data.data[0].promotions;
          })
 
         $scope.$watch(function () {
-                return GetSellers.cachedStore;
+                return GetSellers.cachedPromotions;
             },
             function (newValue, oldValue) {
                 $scope.promotions = newValue;
@@ -119,13 +119,19 @@ angular.module('starter.controllers',['ngCordova'])
 
     })
 
-    .controller('ScannerCtrl', function($scope,$cordovaBarcodeScanner, $ionicPopup,Points) {
+    .controller('ScannerCtrl', function($scope,$cordovaBarcodeScanner, $ionicPopup, Points, GetSellers, GetCustomer) {
        // $scope.promotions = promotions
 
-       /* $scope.contactMessage = {
+        $scope.contactMessage = {
             text: 0
         }
-        var showPopup = function(customer) {
+
+        GetSellers.getDataID(0).then(data => {
+            console.log(data.data.data[0])
+            GetSellers.cachedStore = data.data.data[0];
+        })
+
+        var showPopup = function(customerId) {
 
             // An elaborate, custom popup
             var myPopup = $ionicPopup.show({
@@ -134,30 +140,58 @@ angular.module('starter.controllers',['ngCordova'])
                 buttons: [{
                     text: 'Cancel',
                     onTap: function(e) {
-                        //alert($scope.contactMessage.text);
+                        $scope.result= "Operazione di accredito punti annullata"
                         //return 'cancel button'
                     }
                 }, {
                     text: '<b>Ok</b>',
                     type: 'button-positive',
                     onTap: function(e) {
-                        //alert($scope.contactMessage.text);
+                        //alert($scope.contactMessage.text)
                         //return 'ok button'
-                        return $scope.contactMessage.text;
+                        return $scope.contactMessage.text
                     }
                 }, ]
             });
             myPopup.then(function(res) {
-                Points.add(customer, 'geekology', 10);
-                $scope.result = "Accredito " + res + " punti a: " + customer;
+                Points.add(customerId, GetSellers.cachedStore.id, res).then(function successCallback(response) {
+                    GetCustomer.getDataID().then(data => {
+
+                        $scope.result = "Aggiunti "+ res + " punti all'utente " + data.data.data[0].username
+                })
+
+                }, function errorCallback(response) {
+                    $scope.result= "Impossibile accreditare punti all'utente"
+                });
             });
-        };*/
+        };
+
         $scope.scanBarCode = function () {
             $cordovaBarcodeScanner.scan().then(function(imageData){
-                    var res = imageData.text.split('$');
-                    $scope.result = res[0]
-                    Points.add(res[0], '1', 10)
+                var res = imageData.text.split('$');
+                if (res.length == 1) {
+                    showPopup(res[0]);
                 }
+                if (res.length == 1) {
+                    showPopup(res[0]);
+                }
+                if (res.length == 5){
+                    if(res[1] == GetSellers.cachedStore.id)
+                        Points.sub(res[2],res[1],res[4]).then(data => {
+                            console.log(data.data.data)
+                    $scope.result = "Decrementati "+ res[4] + " punti all'utente " + res[3] + ". Punti rimasti " + data.data.data.points
+                })
+                else
+                    $scope.result = "Impossibile attivare promozioni di altri Venditori "
+
+
+                }else {
+                    $scope.result = "Parametri non validi, errore scansione";
+                }
+            })
+            
+               //showPopup(0);
+
                /* function (result) {
                     alert("We got a barcode\n" +
                         "Result: " + result.text + "\n" +
@@ -180,8 +214,8 @@ angular.module('starter.controllers',['ngCordova'])
                     orientation : "landscape", // Android only (portrait|landscape), default unset so it rotates with the device
                     disableAnimations : true, // iOS
                     disableSuccessBeep: false // iOS
-                }*/
-            );
+                }
+            );*/
         }
     })
 
@@ -190,11 +224,11 @@ angular.module('starter.controllers',['ngCordova'])
 
         GetSellers.getDataID(0).then(data => {
             console.log(data.data.data[0])
-        GetSellers.cachedStore = data.data.data[0].promotions;
+        GetSellers.cachedPromotions = data.data.data[0].promotions;
         })
 
         $scope.$watch(function () {
-                return GetSellers.cachedStore;
+                return GetSellers.cachedPromotions;
             },
             function (newValue, oldValue) {
                 $scope.promotions = newValue;
@@ -264,7 +298,7 @@ angular.module('starter.controllers',['ngCordova'])
 
        // $scope.store = store
 
-        $scope.categories = categories
+        //$scope.categories = categories
 
         $ionicModal.fromTemplateUrl('templates/info-modify.html', {
             scope: $scope

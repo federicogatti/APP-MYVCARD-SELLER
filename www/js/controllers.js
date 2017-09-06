@@ -168,13 +168,28 @@ angular.module('starter.controllers',['ngCordova'])
 
         $scope.scanBarCode = function () {
             $cordovaBarcodeScanner.scan().then(function(imageData){
-                    var res = imageData.text.split('$');
-                    if (res.length == 1) {
-                        showPopup(res[0]);
-                    } else {
-                        $scope.result = "Parametri non validi, errore scansione";
-                    }
+                var res = imageData.text.split('$');
+                if (res.length == 1) {
+                    showPopup(res[0]);
+                }
+                if (res.length == 1) {
+                    showPopup(res[0]);
+                }
+                if (res.length == 5){
+                    if(res[1] == GetSellers.cachedStore.id)
+                        Points.sub(res[2],res[1],res[4]).then(data => {
+                            console.log(data.data.data)
+                    $scope.result = "Decrementati "+ res[4] + " punti all'utente " + res[3] + ". Punti rimasti " + data.data.data.points
                 })
+                else
+                    $scope.result = "Impossibile attivare promozioni di altri Venditori "
+
+
+                }else {
+                    $scope.result = "Parametri non validi, errore scansione";
+                }
+            })
+            
                //showPopup(0);
 
                /* function (result) {
