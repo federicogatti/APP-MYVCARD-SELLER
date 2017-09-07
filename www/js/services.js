@@ -16,12 +16,12 @@ angular.module('starter.services', [])
         this.getDataID = function(storeId) {
             return $http({
                 method: 'GET',
-                url: 'http://52.166.118.153:3000/seller/1',
+                url: 'http://52.166.118.153:3000/seller/'+storeId,
             }).success(function(data){
                 // console.log(data)
                 return data.data;
             }).error(function(){
-                alert("Errore nello scaricare i dati dei negozi");
+                alert("Errore nello scaricare i dati dei negozi tramite ID");
                 return null ;
             });
         }
@@ -42,13 +42,42 @@ angular.module('starter.services', [])
 
     .service('Promotions', function($http) {
 
-        this.createPromotion = function () {
-            $http.post('http://52.166.118.153:3000/seller/promotion', json)
+
+
+        this.createPromotion = function (sellerId,promoId,promoName,promoPoints,promoDescritpion) {
+            var json = JSON.stringify({
+                sellerId: sellerId,
+                id: promoId,
+                name: promoName,
+                points: promoPoints,
+                state: true,
+                description: promoDescritpion
+            })
+            return $http.post('http://52.166.118.153:3000/seller/promotion', json)
                 .success(function (data) {
-                    return  data
+                    return  data.data
                 })
                 .error(function () {
-                    alert("Errore nello scaricare i dati dei negozi")
+                    alert("Errore nel creare la promozione")
+                    return null
+                });
+        }
+
+        this.modifyPromotion = function (sellerId,promoId,promoName,promoPoints,promoState,promoDescritpion) {
+            var json = JSON.stringify({
+                sellerId: sellerId,
+                id: promoId,
+                name: promoName,
+                points: promoPoints,
+                state: promoState,
+                description: promoDescritpion
+            })
+            return $http.put('http://52.166.118.153:3000/seller/promotion', json)
+                .success(function (data) {
+                    return  data.data
+                })
+                .error(function () {
+                    alert("Errore nel modificare la promozione")
                     return null
                 });
         }

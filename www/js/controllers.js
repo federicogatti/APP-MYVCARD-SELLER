@@ -21,10 +21,16 @@ var categories =[
     {type: "Caffetteria", selected: false},
     ]
 
+var storeId;
+
 angular.module('starter.controllers',['ngCordova'])
 
 
-    .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+    .controller('AppCtrl', function($scope, $ionicModal, $timeout,GetSellers) {
+      /*  GetSellers.getDataID(0).then(data => {
+            console.log(data.data.data[0])
+        GetSellers.cachedStore = data.data.data[0];
+    })*/
 
         // With the new view caching in Ionic, Controllers are only called
         // when they are recreated or on app start, instead of every page change.
@@ -34,10 +40,10 @@ angular.module('starter.controllers',['ngCordova'])
         //});
 
         // Form data for the login modal
-        $scope.loginData = {};
+        //$scope.loginData = {};
 
         // Create the login modal that we will use later
-        $ionicModal.fromTemplateUrl('templates/login.html', {
+       /* $ionicModal.fromTemplateUrl('templates/login.html', {
             scope: $scope
         }).then(function(modal) {
             $scope.modal = modal
@@ -62,16 +68,35 @@ angular.module('starter.controllers',['ngCordova'])
             $timeout(function() {
                 $scope.closeLogin()
             }, 1000)
+        }*/
+    })
+
+    .controller('LoginCtrl', function($scope, $ionicModal,$state,$location,GetSellers) {
+        //$scope.store.name = ""
+        $scope.login = function(name){
+            console.log(name)
+            GetSellers.getData().then(data => {
+                for(s in data.data.data){
+
+                    if (data.data.data[s].name.toString().toLowerCase().indexOf(name.toString().toLowerCase()) == 0) {
+                        GetSellers.cachedStore = data.data.data[s]
+                        storeId = data.data.data[s].id
+                        $location.path('/app/scanner')
+                    }
+                }
+            })
         }
     })
 
 
-    .controller('PromotionsCtrl', function($scope, $ionicModal, GetSellers) {
+    .controller('PromotionsCtrl', function($scope, $ionicModal, GetSellers, Promotions, $ionicPopup) {
 
-        GetSellers.getDataID(0).then(data => {
+       /* GetSellers.getDataID(0).then(data => {
             console.log(data.data.data[0])
         GetSellers.cachedPromotions = data.data.data[0].promotions;
-         })
+         })*/
+
+        GetSellers.cachedPromotions = GetSellers.cachedStore.promotions
 
         $scope.$watch(function () {
                 return GetSellers.cachedPromotions;
@@ -97,21 +122,36 @@ angular.module('starter.controllers',['ngCordova'])
         };
 
         $scope.changeState = function (promotion) {
-            var index = promotions.indexOf(promotion)
-            promotions[index].state = !promotions[index].state
-            //promotions[id].state = !promotions[id].state
+            Promotions.modifyPromotion(GetSellers.cachedStore.id, promotion.id, promotion.name,promotion.points,!promotion.state,promotion.description).then( data =>{
+            GetSellers.getDataID(storeId).then(data => {
+                console.log(data.data.data[0])
+            GetSellers.cachedPromotions = data.data.data[0].promotions;})
+        })
         }
 
         $scope.promotion = {}
         $scope.createPromotion = function () {
             var promotion = {
                 name: $scope.promotion.name,
-                id: promotions[promotions.length-1].id+1,
+                id: Math.max.apply(Math, GetSellers.cachedPromotions.map(function (p) {
+                    return p.id;})) + 1,
                 state: true,
                 points: $scope.promotion.points,
                 description: $scope.promotion.description
             }
-            promotions.push(promotion)
+            console.log(promotion)
+            Promotions.createPromotion(GetSellers.cachedStore.id, promotion.id, promotion.name,promotion.points,promotion.description).then( data =>{
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Promozione creata!',
+                    template: 'Promozione ' + promotion.name + ' creata con successo!'
+                });
+                alertPopup.then(function(res) {
+                    console.log('Thank you for not eating my delicious ice cream cone');
+            });
+            GetSellers.getDataID(storeId).then(data => {
+                console.log(data.data.data[0])
+            GetSellers.cachedPromotions = data.data.data[0].promotions;})
+            })
             console.log(promotions)
             $scope.closeCreate()
         }
@@ -126,7 +166,7 @@ angular.module('starter.controllers',['ngCordova'])
             text: 0
         }
 
-        GetSellers.getDataID(0).then(data => {
+        GetSellers.getDataID(storeId).then(data => {
             console.log(data.data.data[0])
             GetSellers.cachedStore = data.data.data[0];
         })
@@ -135,16 +175,18 @@ angular.module('starter.controllers',['ngCordova'])
 
             // An elaborate, custom popup
             var myPopup = $ionicPopup.show({
-                templateUrl: 'popup-template.html',
+                templateUrl: '<input type="number" ng-model="contactMessage.text">',
+                title: "Accredito Punti",
+                subTitle: "Inserisci il numero di punti da accreditare",
                 scope: $scope,
                 buttons: [{
-                    text: 'Cancel',
+                    text: 'Annulla',
                     onTap: function(e) {
                         $scope.result= "Operazione di accredito punti annullata"
                         //return 'cancel button'
                     }
                 }, {
-                    text: '<b>Ok</b>',
+                    text: '<b>Accredita</b>',
                     type: 'button-positive',
                     onTap: function(e) {
                         //alert($scope.contactMessage.text)
@@ -219,10 +261,10 @@ angular.module('starter.controllers',['ngCordova'])
         }
     })
 
-    .controller('PromotionsModifyCtrl', function($scope, $ionicModal, $ionicPopup, GetSellers) {
+    .controller('PromotionsModifyCtrl', function($scope, $ionicModal, $ionicPopup, GetSellers, Promotions) {
       //  $scope.promotions = promotions
 
-        GetSellers.getDataID(0).then(data => {
+        GetSellers.getDataID(storeId).then(data => {
             console.log(data.data.data[0])
         GetSellers.cachedPromotions = data.data.data[0].promotions;
         })
@@ -244,7 +286,11 @@ angular.module('starter.controllers',['ngCordova'])
 
         //$scope.promotion = promotions[$stateParams.promotionId]
         $scope.modify = function () {
-            promotions[index] = $scope.promotion
+
+            Promotions.modifyPromotion(GetSellers.cachedStore.id, $scope.promotion.id, $scope.promotion.name, $scope.promotion.points,$scope.promotion.state,$scope.promotion.description).then( data =>{
+                GetSellers.getDataID(storeId).then(data => {console.log(data.data.data[0])
+                GetSellers.cachedPromotions = data.data.data[0].promotions;})
+        })
             $scope.closeModify()
         }
 
@@ -284,7 +330,7 @@ angular.module('starter.controllers',['ngCordova'])
 
     .controller('SettingsCtrl', function($scope,$ionicModal, GetSellers) {
 
-        GetSellers.getDataID(0).then(data => {
+        GetSellers.getDataID(storeId).then(data => {
             console.log(data.data.data[0])
         GetSellers.cachedStore = data.data.data[0];
         })
