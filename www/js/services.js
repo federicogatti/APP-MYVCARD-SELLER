@@ -82,6 +82,17 @@ angular.module('starter.services', [])
                 });
         }
 
+        this.deletePromotion = function (sellerId,promoId) {
+            return $http.delete('http://52.166.118.153:3000/seller/' + sellerId + '/' + promoId)
+                .success(function (data) {
+                    return  data.data
+                })
+                .error(function () {
+                    alert("Errore nel modificare la promozione")
+                    return null
+                });
+        }
+
     })
 
     .service('Points', function($http) {

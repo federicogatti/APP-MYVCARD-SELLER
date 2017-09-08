@@ -27,10 +27,11 @@ angular.module('starter.controllers',['ngCordova'])
 
 
     .controller('AppCtrl', function($scope, $ionicModal, $timeout,GetSellers) {
-      /*  GetSellers.getDataID(0).then(data => {
+        GetSellers.getDataID(0).then(data => {
             console.log(data.data.data[0])
         GetSellers.cachedStore = data.data.data[0];
-    })*/
+        storeId = 0
+    })
 
         // With the new view caching in Ionic, Controllers are only called
         // when they are recreated or on app start, instead of every page change.
@@ -71,23 +72,35 @@ angular.module('starter.controllers',['ngCordova'])
         }*/
     })
 
-    .controller('LoginCtrl', function($scope, $ionicModal,$state,$location,GetSellers) {
+    .controller('LoginCtrl', function($scope, $ionicModal,$state,$location,$ionicPopup,GetSellers) {
         //$scope.store.name = ""
         $scope.login = function(name){
             console.log(name)
+            var logged = false
+            if(name != undefined){
             GetSellers.getData().then(data => {
                 for(s in data.data.data){
 
-                    if (data.data.data[s].name.toString().toLowerCase().indexOf(name.toString().toLowerCase()) == 0) {
+                    if (data.data.data[s].name.toString().toLowerCase() === name.toString().toLowerCase()) {
+                        logged = true
                         GetSellers.cachedStore = data.data.data[s]
                         storeId = data.data.data[s].id
                         $location.path('/app/scanner')
                     }
                 }
-            })
-        }
-    })
+            if(!logged) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Nessun utente trovato',
+                    template: 'Crea un account se non sei registrato'
+                });
 
+                alertPopup.then(function (res) {
+                });
+            }
+            })}
+
+}
+})
 
     .controller('PromotionsCtrl', function($scope, $ionicModal, GetSellers, Promotions, $ionicPopup) {
 
@@ -166,10 +179,10 @@ angular.module('starter.controllers',['ngCordova'])
             text: 0
         }
 
-        GetSellers.getDataID(storeId).then(data => {
+       /* GetSellers.getDataID(storeId).then(data => {
             console.log(data.data.data[0])
             GetSellers.cachedStore = data.data.data[0];
-        })
+        })*/
 
         var showPopup = function(customerId) {
 
@@ -296,7 +309,6 @@ angular.module('starter.controllers',['ngCordova'])
 
         $scope.openModify = function(promotion) {
             var app = JSON.parse(JSON.stringify(promotion)) //copio il conternuto del json altrimenti sarebbe passato per reference
-            index = promotions.indexOf(promotion)
             if(app.state)
                 $scope.state = "Attiva"
             else
@@ -309,7 +321,7 @@ angular.module('starter.controllers',['ngCordova'])
             $scope.modal.hide()
         }
 
-        $scope.remove = function (promotion) {
+      /*  $scope.remove = function (promotion) {
             if(promotion.state) {
                 var alertPopup = $ionicPopup.alert({
                     title: 'Promozione attiva!',
@@ -325,7 +337,34 @@ angular.module('starter.controllers',['ngCordova'])
                     promotions.splice(index, 1)
             }
 
-        }
+        }*/
+        $scope.remove = function (promotion) {
+            if(promotion.state) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Promozione attiva!',
+                    template: 'Disattiva la promozione prima di cancellarla'
+                });
+                alertPopup.then(function(res) {
+                    console.log('Thank you for not eating my delicious ice cream cone');
+                });
+            }
+            else {
+                $scope.showConfirm = function() {
+                    var confirmPopup = $ionicPopup.confirm({
+                        title: 'Canellazione',
+                        template: 'Sei sicuro di voler cancellare la promozione?'
+                    });
+
+                    confirmPopup.then(function(res) {
+                        if(res) {
+                            Promotions.deletePromotion(GetSellers.cachedStore, promotion.id).then(data => {
+                                GetSellers.getDataID(storeId).then(data => {
+                                console.log(data.data.data[0])
+                            GetSellers.cachedPromotions = data.data.data[0].promotions;})
+                        })
+                        }
+                    })
+                }}}
     })
 
     .controller('SettingsCtrl', function($scope,$ionicModal, GetSellers) {
