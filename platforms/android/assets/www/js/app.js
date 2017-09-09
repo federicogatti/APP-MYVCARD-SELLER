@@ -27,9 +27,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
             .state('app', {
                 url: '/app',
-                abstract: true,
                 templateUrl: 'templates/menu.html',
                 controller: 'AppCtrl'
+            })
+
+            .state('login', {
+                url: '/login',
+                templateUrl: 'templates/login.html',
+                controller: 'LoginCtrl'
             })
 
 
@@ -75,5 +80,5 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
         ;
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/app/scanner');
+        $urlRouterProvider.otherwise('/login');
     });

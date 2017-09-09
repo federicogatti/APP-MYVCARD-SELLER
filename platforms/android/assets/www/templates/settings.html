@@ -8,19 +8,19 @@
         <div class="list card" >
 
             <div class="item item-avatar">
-                <!--<img src="mcfly.jpg"> -->
+                <img ng-src="img/{{store.img}}">
                 <h2>{{store.name}}</h2>
                 <p>{{store.category}}</p>
             </div>
 
             <div class="item item-body">
-                <img class="full-image" src="{{store.img}}">
                 <p>
                     {{store.description}}
                 </p>
             </div>
 
         </div>
+        <a ui-sref="login()"  class="button button-assertive button-block">Log Out</a>
 
     </ion-content>
 </ion-view>
