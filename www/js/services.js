@@ -136,7 +136,7 @@ angular.module('starter.services', [])
         this.getDataID = function(storeId) {
             return $http({
                 method: 'GET',
-                url: 'http://52.166.118.153:3000/customer/0',
+                url: 'http://52.166.118.153:3000/customer/'+storeId,
             }).success(function(data){
                 // console.log(data)
                 return data.data;
@@ -158,4 +158,25 @@ angular.module('starter.services', [])
         //this.cachedUser = [];
         this.cachedUser;
     })
+
+    .service('ModifyInfo', function($http) {
+
+        this.modify = function (id,name,description,category) {
+            var json = JSON.stringify({
+                id: id,
+                name: name,
+                description: description,
+                category: category
+            })
+            return $http.put('http://52.166.118.153:3000/seller', json)
+                .success(function (data) {
+                    return  data.data
+                })
+                .error(function () {
+                    alert("Errore nello scaricare i dati dei negozi")
+                    return null
+                });
+        }
+    })
+
 ;

@@ -187,7 +187,7 @@ angular.module('starter.controllers',['ngCordova'])
             GetSellers.cachedStore = data.data.data[0];
         })*/
 
-        var showPopup = function(customerId) {
+        var showPopup = function(customerId,username) {
 
             // An elaborate, custom popup
             var myPopup = $ionicPopup.show({
@@ -212,13 +212,13 @@ angular.module('starter.controllers',['ngCordova'])
                 }, ]
             });
             myPopup.then(function(res) {
-                console.log("dentro")
                 if (parseInt(res) >= 1){
                     Points.add(customerId, GetSellers.cachedStore.id, parseInt(res)).then(function successCallback(response) {
-                        GetCustomer.getDataID().then(data => {
+                       /* GetCustomer.getDataID(customerId).then(data => {
 
                             $scope.result = "Aggiunti " + res + " punti all'utente " + data.data.data[0].username
-                    })
+                    })*/
+                        $scope.result = "Aggiunti " + res + " punti all'utente " + username
 
                     }, function errorCallback(response) {
                         $scope.result = "Impossibile accreditare punti all'utente"
@@ -230,8 +230,8 @@ angular.module('starter.controllers',['ngCordova'])
         $scope.scanBarCode = function () {
             $cordovaBarcodeScanner.scan().then(function(imageData){
                 var res = imageData.text.split('$');
-                if (res.length == 1 && res[0]!=="") {
-                    showPopup(res[0]);
+                if (res.length == 2 && res[0]!=="") {
+                    showPopup(res[0],res[1]);
                 }
                 if (res.length == 5){
                     if(res[1] == GetSellers.cachedStore.id)
@@ -243,7 +243,7 @@ angular.module('starter.controllers',['ngCordova'])
                     $scope.result = "Impossibile attivare promozioni di altri Venditori "
 
 
-                }if(res.length != 1 && res.length != 5) {
+                }if(res.length != 2 && res.length != 5) {
                     $scope.result = "Parametri non validi, errore scansione";
                 }
             })

@@ -21,6 +21,20 @@ var categories =[
     {type: "Caffetteria", selected: false},
     ]
 
+function updateCategories (store){
+    console.log(store.category)
+    console.log(categories)
+    for (c in categories){
+        console.log(categories[c].type)
+        if(store.category === categories[c].type)
+            categories[c].selected = true
+        else
+            categories[c].selected = false
+    }
+    console.log(categories)
+
+}
+
 var storeId;
 
 angular.module('starter.controllers',['ngCordova'])
@@ -85,6 +99,7 @@ angular.module('starter.controllers',['ngCordova'])
                         GetSellers.cachedStore = data.data.data[s]
                         GetSellers.cachedPromotions = data.data.data[s].promotions
                         storeId = data.data.data[s].id
+                        updateCategories(GetSellers.cachedStore)
                         $location.path('/app/scanner')
                     }
                 }
@@ -187,7 +202,7 @@ angular.module('starter.controllers',['ngCordova'])
             GetSellers.cachedStore = data.data.data[0];
         })*/
 
-        var showPopup = function(customerId) {
+        var showPopup = function(customerId,username) {
 
             // An elaborate, custom popup
             var myPopup = $ionicPopup.show({
@@ -212,13 +227,13 @@ angular.module('starter.controllers',['ngCordova'])
                 }, ]
             });
             myPopup.then(function(res) {
-                console.log("dentro")
                 if (parseInt(res) >= 1){
                     Points.add(customerId, GetSellers.cachedStore.id, parseInt(res)).then(function successCallback(response) {
-                        GetCustomer.getDataID(customerId).then(data => {
+                       /* GetCustomer.getDataID(customerId).then(data => {
 
                             $scope.result = "Aggiunti " + res + " punti all'utente " + data.data.data[0].username
-                    })
+                    })*/
+                        $scope.result = "Aggiunti " + res + " punti all'utente " + username
 
                     }, function errorCallback(response) {
                         $scope.result = "Impossibile accreditare punti all'utente"
@@ -230,8 +245,8 @@ angular.module('starter.controllers',['ngCordova'])
         $scope.scanBarCode = function () {
             $cordovaBarcodeScanner.scan().then(function(imageData){
                 var res = imageData.text.split('$');
-                if (res.length == 1 && res[0]!=="") {
-                    showPopup(res[0]);
+                if (res.length == 2 && res[0]!=="") {
+                    showPopup(res[0],res[1]);
                 }
                 if (res.length == 5){
                     if(res[1] == GetSellers.cachedStore.id)
@@ -243,7 +258,7 @@ angular.module('starter.controllers',['ngCordova'])
                     $scope.result = "Impossibile attivare promozioni di altri Venditori "
 
 
-                }if(res.length != 1 && res.length != 5) {
+                }if(res.length != 2 && res.length != 5) {
                     $scope.result = "Parametri non validi, errore scansione";
                 }
             })
@@ -325,12 +340,21 @@ angular.module('starter.controllers',['ngCordova'])
                 }}
     })
 
-    .controller('SettingsCtrl', function($scope,$ionicModal, GetSellers) {
+    .controller('SettingsCtrl', function($scope,$ionicModal, GetSellers, ModifyInfo) {
+
+
 
         GetSellers.getDataID(storeId).then(data => {
             console.log(data.data.data[0])
-        GetSellers.cachedStore = data.data.data[0];
+        GetSellers.cachedStore = data.data.data[0]; })
+        
+        function update (){
+            GetSellers.getDataID(storeId).then(data => {
+                console.log(data.data.data[0])
+            GetSellers.cachedStore = data.data.data[0];
         })
+
+        }
 
         $scope.$watch(function () {
                 return GetSellers.cachedStore;
@@ -354,14 +378,21 @@ angular.module('starter.controllers',['ngCordova'])
         }
 
         $scope.openModify = function() {
-            var app = JSON.parse(JSON.stringify(store))
+            var app = JSON.parse(JSON.stringify(GetSellers.cachedStore))
             $scope.store_info = app
+            $scope.categories = categories
             $scope.modal.show()
         }
 
         $scope.modify = function () {
-            store = $scope.store_info
-            $scope.store = store
+           // store = $scope.store_info
+            console.log($scope.store_info)
+            updateCategories($scope.store_info.category)
+           // $scope.store = store
+            ModifyInfo.modify(GetSellers.cachedStore.id, $scope.store_info.name, $scope.store_info.description, $scope.store_info.category).then( data=>{
+                console.log(data)
+            update()
+            })
             $scope.closeModify()
         }
 
