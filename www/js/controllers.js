@@ -215,7 +215,7 @@ angular.module('starter.controllers',['ngCordova'])
                 console.log("dentro")
                 if (parseInt(res) >= 1){
                     Points.add(customerId, GetSellers.cachedStore.id, parseInt(res)).then(function successCallback(response) {
-                        GetCustomer.getDataID().then(data => {
+                        GetCustomer.getDataID(customerId).then(data => {
 
                             $scope.result = "Aggiunti " + res + " punti all'utente " + data.data.data[0].username
                     })
@@ -230,7 +230,7 @@ angular.module('starter.controllers',['ngCordova'])
         $scope.scanBarCode = function () {
             $cordovaBarcodeScanner.scan().then(function(imageData){
                 var res = imageData.text.split('$');
-                if (res.length == 1) {
+                if (res.length == 1 && res[0]!=="") {
                     showPopup(res[0]);
                 }
                 if (res.length == 5){
