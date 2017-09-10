@@ -108,8 +108,17 @@ angular.module('starter.controllers',['ngCordova'])
             console.log(data.data.data[0])
         GetSellers.cachedPromotions = data.data.data[0].promotions;
          })*/
+       update()
 
-        GetSellers.cachedPromotions = GetSellers.cachedStore.promotions
+        function update (){
+           GetSellers.getDataID(storeId).then(data => {
+               console.log(data.data.data[0])
+           GetSellers.cachedPromotions = data.data.data[0].promotions;
+       })
+
+       }
+
+       // GetSellers.cachedPromotions = GetSellers.cachedStore.promotions
 
         $scope.$watch(function () {
                 return GetSellers.cachedPromotions;
@@ -131,10 +140,12 @@ angular.module('starter.controllers',['ngCordova'])
         };
 
         $scope.closeCreate = function() {
+            update()
             $scope.modal.hide();
         };
 
         $scope.changeState = function (promotion) {
+            console.log()
             Promotions.modifyPromotion(GetSellers.cachedStore.id, promotion.id, promotion.name,promotion.points,!promotion.state,promotion.description).then( data =>{
             GetSellers.getDataID(storeId).then(data => {
                 console.log(data.data.data[0])
@@ -155,15 +166,8 @@ angular.module('starter.controllers',['ngCordova'])
             }
             console.log(promotion)
             Promotions.createPromotion(GetSellers.cachedStore.id, promotion.id, promotion.name, promotion.points, promotion.description).then(data => {
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Promozione creata!',
-                    template: 'Promozione ' + promotion.name + ' creata con successo!'
-                });
+                update()
 
-            GetSellers.getDataID(storeId).then(data => {
-                console.log(data.data.data[0])
-            GetSellers.cachedPromotions = data.data.data[0].promotions;
-        })
         })
             $scope.closeCreate()
         }
@@ -209,8 +213,8 @@ angular.module('starter.controllers',['ngCordova'])
             });
             myPopup.then(function(res) {
                 console.log("dentro")
-                if (res > 0){
-                    Points.add(customerId, GetSellers.cachedStore.id, res).then(function successCallback(response) {
+                if (parseInt(res) >= 1){
+                    Points.add(customerId, GetSellers.cachedStore.id, parseInt(res)).then(function successCallback(response) {
                         GetCustomer.getDataID().then(data => {
 
                             $scope.result = "Aggiunti " + res + " punti all'utente " + data.data.data[0].username
@@ -229,9 +233,6 @@ angular.module('starter.controllers',['ngCordova'])
                 if (res.length == 1) {
                     showPopup(res[0]);
                 }
-                if (res.length == 1) {
-                    showPopup(res[0]);
-                }
                 if (res.length == 5){
                     if(res[1] == GetSellers.cachedStore.id)
                         Points.sub(res[2],res[1],res[4]).then(data => {
@@ -242,7 +243,7 @@ angular.module('starter.controllers',['ngCordova'])
                     $scope.result = "Impossibile attivare promozioni di altri Venditori "
 
 
-                }else {
+                }if(res.length != 1 && res.length != 5) {
                     $scope.result = "Parametri non validi, errore scansione";
                 }
             })

@@ -187,7 +187,7 @@ angular.module('starter.controllers',['ngCordova'])
 
             // An elaborate, custom popup
             var myPopup = $ionicPopup.show({
-                templateUrl: '<input type="number" ng-model="contactMessage.text" name="message">',
+                templateUrl: 'popup-template.html',
                 title: "Accredito Punti",
                 subTitle: "Inserisci il numero di punti da accreditare",
                 scope: $scope,
@@ -207,18 +207,20 @@ angular.module('starter.controllers',['ngCordova'])
                     }
                 }, ]
             });
-            if(res>=0){
             myPopup.then(function(res) {
-                Points.add(customerId, GetSellers.cachedStore.id, res).then(function successCallback(response) {
-                    GetCustomer.getDataID().then(data => {
+                console.log("dentro")
+                if (res > 0){
+                    Points.add(customerId, GetSellers.cachedStore.id, res).then(function successCallback(response) {
+                        GetCustomer.getDataID().then(data => {
 
-                        $scope.result = "Aggiunti "+ res + " punti all'utente " + data.data.data[0].username
-                })
+                            $scope.result = "Aggiunti " + res + " punti all'utente " + data.data.data[0].username
+                    })
 
-                }, function errorCallback(response) {
-                    $scope.result= "Impossibile accreditare punti all'utente"
-                });
-            });}
+                    }, function errorCallback(response) {
+                        $scope.result = "Impossibile accreditare punti all'utente"
+                    });
+            }
+            });
         };
 
         $scope.scanBarCode = function () {
@@ -244,33 +246,6 @@ angular.module('starter.controllers',['ngCordova'])
                     $scope.result = "Parametri non validi, errore scansione";
                 }
             })
-            
-               //showPopup(0);
-
-               /* function (result) {
-                    alert("We got a barcode\n" +
-                        "Result: " + result.text + "\n" +
-                        "Format: " + result.format + "\n" +
-                        "Cancelled: " + result.cancelled);
-                    $scope.result = result
-                },
-                function (error) {
-                    alert("Scanning failed: " + error);
-                },
-                {
-                    preferFrontCamera : true, // iOS and Android
-                    showFlipCameraButton : true, // iOS and Android
-                    showTorchButton : true, // iOS and Android
-                    torchOn: true, // Android, launch with the torch switched on (if available)
-                    saveHistory: true, // Android, save scan history (default false)
-                    prompt : "Place a barcode inside the scan area", // Android
-                    resultDisplayDuration: 500, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
-                    formats : "QR_CODE,PDF_417", // default: all but PDF_417 and RSS_EXPANDED
-                    orientation : "landscape", // Android only (portrait|landscape), default unset so it rotates with the device
-                    disableAnimations : true, // iOS
-                    disableSuccessBeep: false // iOS
-                }
-            );*/
         }
     })
 
@@ -321,23 +296,6 @@ angular.module('starter.controllers',['ngCordova'])
             $scope.modal.hide()
         }
 
-      /*  $scope.remove = function (promotion) {
-            if(promotion.state) {
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Promozione attiva!',
-                    template: 'Disattiva la promozione prima di cancellarla'
-                });
-                alertPopup.then(function(res) {
-                    console.log('Thank you for not eating my delicious ice cream cone');
-                });
-            }
-            else {
-                var index = promotions.indexOf(promotion)
-                if (index > -1)
-                    promotions.splice(index, 1)
-            }
-
-        }*/
         $scope.remove = function (promotion) {
             if(promotion.state) {
                 var alertPopup = $ionicPopup.alert({
@@ -349,22 +307,21 @@ angular.module('starter.controllers',['ngCordova'])
                 });
             }
             else {
-                $scope.showConfirm = function() {
                     var confirmPopup = $ionicPopup.confirm({
-                        title: 'Canellazione',
+                        title: 'Cancellazione',
                         template: 'Sei sicuro di voler cancellare la promozione?'
                     });
 
                     confirmPopup.then(function(res) {
                         if(res) {
-                            Promotions.deletePromotion(GetSellers.cachedStore, promotion.id).then(data => {
+                            Promotions.deletePromotion(GetSellers.cachedStore.id, promotion.id).then(data => {
                                 GetSellers.getDataID(storeId).then(data => {
                                 console.log(data.data.data[0])
                             GetSellers.cachedPromotions = data.data.data[0].promotions;})
                         })
                         }
                     })
-                }}}
+                }}
     })
 
     .controller('SettingsCtrl', function($scope,$ionicModal, GetSellers) {

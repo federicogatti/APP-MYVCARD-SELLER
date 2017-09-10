@@ -83,7 +83,7 @@ angular.module('starter.services', [])
         }
 
         this.deletePromotion = function (sellerId,promoId) {
-            return $http.delete('http://52.166.118.153:3000/seller/' + sellerId + '/' + promoId)
+            return $http.delete('http://52.166.118.153:3000/seller/promotion/' + sellerId + '/' + promoId)
                 .success(function (data) {
                     return  data.data
                 })
